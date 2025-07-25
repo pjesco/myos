@@ -4,7 +4,7 @@
 struct gdt_entry_struct gdt_entries[5];
 struct gdt_ptr_struct gdt_ptr;
 
-void initGdt() {
+void initGDT() {
     gdt_ptr.limit = (sizeof(struct gdt_entry_struct) * 5) - 1;
     gdt_ptr.base = (uintptr_t)&gdt_entries;
 
@@ -29,20 +29,3 @@ void setGdtGate(uint32_t num, uint32_t base, uint32_t limit, uint8_t access, uin
 
     gdt_entries[num].access = access;
 }
-
-/*asm(
-    ".text\n\t"
-    ".globl gdt_flush\n\t"
-    "gdt_flush:"
-    "mov %eax, [%esp+4]\n\t"
-    "lgdt [%eax]\n\t"
-    "mov %eax, 0x10\n\t"
-    "mov %ds, %ax\n\t"
-    "mov %es, %ax\n\t"
-    "mov %fs, %ax\n\t"
-    "mov %gs, %ax\n\t"
-    "mov %ss, %ax\n\t"
-    "jmp 0x08:flush\n\t"
-    ".flush:\n\t"
-    "ret\n\t"
-);*/

@@ -3,11 +3,14 @@
 #include <kernel/tty.h>
 #include <kernel/pgdirectory.h>
 #include <kernel/pgtable.h>
+#include <kernel/gdt.h>
 
 uint32_t page_directory[1024] __attribute__((aligned(4096)));
 uint32_t first_page_table[1024] __attribute__((aligned(4096)));
 
 void kernel_main(void) {
+	initGDT();
+
 	initialize_pgdirectory(page_directory);
 	initialize_pgtable(first_page_table);
 
