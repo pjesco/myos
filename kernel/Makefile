@@ -6,6 +6,7 @@ CFLAGS?=-O2 -g
 CPPFLAGS?=
 LDFLAGS?=
 LIBS?=
+NASM?=nasm
 
 DESTDIR?=
 PREFIX?=/usr/local
@@ -17,6 +18,7 @@ CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra
 CPPFLAGS:=$(CPPFLAGS) -D__is_kernel -Iinclude
 LDFLAGS:=$(LDFLAGS)
 LIBS:=$(LIBS) -nostdlib -lk -lgcc
+ASSEMBLIES=$(exceptionhandlers.s, excetionhandlers.o)
 
 ARCHDIR=arch/$(HOSTARCH)
 
@@ -51,6 +53,13 @@ $(ARCHDIR)/crtn.o \
 .SUFFIXES: .o .c .S
 
 all: myos.kernel
+
+#$(ASSEMBLIES): %.o : %.s
+#	$(NASM) -f elf32 -o $@ $<
+
+.s.o:
+	nasm -f elf32 $(ARCHDIR)/exceptionhandlers.s -o $(ARCHDIR)/exceptionhandlers.o
+	nasm -f elf32 $(ARCHDIR)/gdts.s -o $(ARCHDIR)/gdts.o
 
 myos.kernel: $(OBJS) $(ARCHDIR)/linker.ld
 	$(CC) -T $(ARCHDIR)/linker.ld -o $@ $(CFLAGS) $(LINK_LIST)
